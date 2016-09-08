@@ -53,7 +53,6 @@ bad_domains = ['amazon', 'doubleclick', 'twitter']
 
 
 class ContentExtractor(object):
-
     def __init__(self, config):
         self.config = config
         self.parser = self.config.get_parser()
@@ -213,7 +212,17 @@ class ContentExtractor(object):
                 datetime_obj = parse_date_str(date_str)
                 if datetime_obj:
                     return datetime_obj
-
+        # obtain text for a tag string
+        BODY_DATE_TAGS = [
+            {'attribute': 'class', 'value': 'kp-view'},
+        ]
+        for known_tag in BODY_DATE_TAGS:
+            cur_tag = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
+            if cur_tag:
+                date_str = self.parser.getText(meta_tags[0])
+                datetime_obj = parse_date_str(date_str)
+                if datetime_obj:
+                    return datetime_obj
         return None
 
     def get_title(self, doc):
@@ -318,7 +327,7 @@ class ContentExtractor(object):
             # look up for a Content-Language in meta
             items = [
                 {'tag': 'meta', 'attr': 'http-equiv',
-                    'value': 'content-language'},
+                 'value': 'content-language'},
                 {'tag': 'meta', 'attr': 'name', 'value': 'lang'}
             ]
             for item in items:
@@ -558,7 +567,7 @@ class ContentExtractor(object):
                                'subdomain' % p_url)
                     continue
                 else:
-                    valid_categories.append(scheme+'://'+domain)
+                    valid_categories.append(scheme + '://' + domain)
                     # TODO account for case where category is in form
                     # http://subdomain.domain.tld/category/ <-- still legal!
             else:
@@ -569,7 +578,7 @@ class ContentExtractor(object):
                     path_chunks.remove('index.html')
 
                 if len(path_chunks) == 1 and len(path_chunks[0]) < 14:
-                    valid_categories.append(domain+path)
+                    valid_categories.append(domain + path)
                 else:
                     if self.config.verbose:
                         print ('elim category url %s for >1 path chunks '
@@ -658,7 +667,7 @@ class ContentExtractor(object):
 
         for node in nodes_to_check:
             text_node = self.parser.getText(node)
-            word_stats = self.stopwords_class(language=self.language).\
+            word_stats = self.stopwords_class(language=self.language). \
                 get_stopword_count(text_node)
             high_link_density = self.is_highlink_density(node)
             if word_stats.get_stopword_count() > 2 and not high_link_density:
@@ -671,7 +680,7 @@ class ContentExtractor(object):
         for node in nodes_with_text:
             boost_score = float(0)
             # boost
-            if(self.is_boostable(node)):
+            if (self.is_boostable(node)):
                 if cnt >= 0:
                     boost_score = float((1.0 / starting_boost) * 50)
                     starting_boost += 1
@@ -686,7 +695,7 @@ class ContentExtractor(object):
                         boost_score = float(5)
 
             text_node = self.parser.getText(node)
-            word_stats = self.stopwords_class(language=self.language).\
+            word_stats = self.stopwords_class(language=self.language). \
                 get_stopword_count(text_node)
             upscore = int(word_stats.get_stopword_count() + boost_score)
 
@@ -739,7 +748,7 @@ class ContentExtractor(object):
                 if steps_away >= max_stepsaway_from_node:
                     return False
                 paraText = self.parser.getText(current_node)
-                word_stats = self.stopwords_class(language=self.language).\
+                word_stats = self.stopwords_class(language=self.language). \
                     get_stopword_count(paraText)
                 if word_stats.get_stopword_count() > minimum_stopword_count:
                     return True
@@ -769,7 +778,7 @@ class ContentExtractor(object):
         """Adds any siblings that may have a decent score to this node
         """
         if current_sibling.tag == 'p' and \
-                len(self.parser.getText(current_sibling)) > 0:
+                        len(self.parser.getText(current_sibling)) > 0:
             e0 = current_sibling
             if e0.tail:
                 e0 = copy.deepcopy(e0)
@@ -785,7 +794,7 @@ class ContentExtractor(object):
                 for first_paragraph in potential_paragraphs:
                     text = self.parser.getText(first_paragraph)
                     if len(text) > 0:
-                        word_stats = self.stopwords_class(language=self.language).\
+                        word_stats = self.stopwords_class(language=self.language). \
                             get_stopword_count(text)
                         paragraph_score = word_stats.get_stopword_count()
                         sibling_baseline_score = float(.30)
@@ -815,7 +824,7 @@ class ContentExtractor(object):
 
         for node in nodes_to_check:
             text_node = self.parser.getText(node)
-            word_stats = self.stopwords_class(language=self.language).\
+            word_stats = self.stopwords_class(language=self.language). \
                 get_stopword_count(text_node)
             high_link_density = self.is_highlink_density(node)
             if word_stats.get_stopword_count() > 2 and not high_link_density:
