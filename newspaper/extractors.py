@@ -217,9 +217,9 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'kp-view'},
         ]
         for known_tag in BODY_DATE_TAGS:
-            cur_tag = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
-            if cur_tag:
-                date_str = self.parser.getText(meta_tags[0])
+            cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
+            if cur_tags:
+                date_str = self.parser.getText(cur_tags[0])
                 datetime_obj = parse_date_str(date_str)
                 if datetime_obj:
                     return datetime_obj
