@@ -174,7 +174,7 @@ class ContentExtractor(object):
 
         def parse_date_str(date_str):
             try:
-                datetime_obj = date_parser(date_str)
+                datetime_obj = date_parser(date_str, fuzzy=True)
                 return datetime_obj
             except:
                 # near all parse failures are due to URL dates without a day
@@ -199,6 +199,9 @@ class ContentExtractor(object):
             {'attribute': 'name', 'value': 'publication_date', 'content': 'content'},
             {'attribute': 'name', 'value': 'sailthru.date', 'content': 'content'},
             {'attribute': 'name', 'value': 'PublishDate', 'content': 'content'},
+            {'attribute': 'id', 'value': 'publishDate', 'content': 'title'},
+            {'attribute': 'http-equiv', 'value': 'Last-Modified', 'content': 'content'},
+            {'attribute': 'name', 'value': 'parsely-pub-date', 'content': 'content'},
         ]
         for known_meta_tag in PUBLISH_DATE_TAGS:
             meta_tags = self.parser.getElementsByTag(
@@ -215,10 +218,17 @@ class ContentExtractor(object):
         # obtain text for a tag string
         BODY_DATE_TAGS = [
             {'attribute': 'class', 'value': 'kp-view'},
+            {'attribute': 'class', 'value': 'post-date updated'},
+            {'attribute': 'class', 'value': 'switch-left'},
+            {'attribute': 'class', 'value': 'month pull-left'},
+            {'attribute': 'id', 'value': 'updatedOn'},
+            {'attribute': 'class', 'value': 'views'},
+            {'attribute': 'id', 'value': 'date'},
+            {'attribute': 'class', 'value': 'byline'},
         ]
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
-            if cur_tags:
+            if cur_tags and self.parser.getAttribute(cur_tags[0], known_tag['attribute']) == known_tag['value']:
                 date_str = self.parser.getText(cur_tags[0])
                 datetime_obj = parse_date_str(date_str)
                 if datetime_obj:
