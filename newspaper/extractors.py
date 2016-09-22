@@ -225,6 +225,11 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'views'},
             {'attribute': 'id', 'value': 'date'},
             {'attribute': 'class', 'value': 'byline'},
+            {'attribute': 'class', 'value': 'submitted'},
+            {'attribute': 'class', 'value': 'last_updated'},
+            {'attribute': 'class', 'value': 'postdate'},
+            {'attribute': 'class', 'value': 'time'},
+            {'attribute': 'id', 'value': 'ctl00_ContentPlaceHolder1_lblPublishedDate'},
         ]
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
