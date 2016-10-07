@@ -243,47 +243,53 @@ class ContentExtractor(object):
     def get_title(self, doc):
         """Fetch the article title and analyze it
         """
-        title = ''
-        title_element = self.parser.getElementsByTag(doc, tag='title')
-        # no title found
-        if title_element is None or len(title_element) == 0:
+        try:
+            title = ''
+            title_element = self.parser.getElementsByTag(doc, tag='meta', attr='property', value='og:title')
+            # no title found
+            if title_element is None or len(title_element) == 0:
+                title_element = self.parser.getElementsByTag(doc, tag='title')
+                title_text = self.parser.getText(title_element[0])
+
+            if title_element is None or len(title_element) == 0:
+                return title
+            else:
+                title_text = self.parser.getAttribute(title_element[0], 'content')
+            # title elem found
+            # split title with |
+            used_delimeter = False
+            if '|' in title_text:
+                title_text = self.split_title(title_text, PIPE_SPLITTER)
+                used_delimeter = True
+
+            # split title with -
+            if not used_delimeter and '-' in title_text:
+                title_text = self.split_title(title_text, DASH_SPLITTER)
+                used_delimeter = True
+
+            # split title with _
+            if not used_delimeter and '_' in title_text:
+                title_text = self.split_title(title_text, UNDERSCORE_SPLITTER)
+
+            # split title with /
+            if not used_delimeter and '/' in title_text:
+                title_text = self.split_title(title_text, SLASH_SPLITTER)
+                used_delimeter = True
+
+            # split title with »
+            if not used_delimeter and u'»' in title_text:
+                title_text = self.split_title(title_text, ARROWS_SPLITTER)
+                used_delimeter = True
+
+            # split title with :
+            if not used_delimeter and ':' in title_text:
+                title_text = self.split_title(title_text, COLON_SPLITTER)
+                used_delimeter = True
+
+            title = MOTLEY_REPLACEMENT.replaceAll(title_text)
             return title
-
-        # title elem found
-        title_text = self.parser.getText(title_element[0])
-        used_delimeter = False
-
-        # split title with |
-        if '|' in title_text:
-            title_text = self.split_title(title_text, PIPE_SPLITTER)
-            used_delimeter = True
-
-        # split title with -
-        if not used_delimeter and '-' in title_text:
-            title_text = self.split_title(title_text, DASH_SPLITTER)
-            used_delimeter = True
-
-        # split title with _
-        if not used_delimeter and '_' in title_text:
-            title_text = self.split_title(title_text, UNDERSCORE_SPLITTER)
-
-        # split title with /
-        if not used_delimeter and '/' in title_text:
-            title_text = self.split_title(title_text, SLASH_SPLITTER)
-            used_delimeter = True
-
-        # split title with »
-        if not used_delimeter and u'»' in title_text:
-            title_text = self.split_title(title_text, ARROWS_SPLITTER)
-            used_delimeter = True
-
-        # split title with :
-        if not used_delimeter and ':' in title_text:
-            title_text = self.split_title(title_text, COLON_SPLITTER)
-            used_delimeter = True
-
-        title = MOTLEY_REPLACEMENT.replaceAll(title_text)
-        return title
+        except Exception as e:
+            return ''
 
     def split_title(self, title, splitter):
         """Split the title to best part possible
