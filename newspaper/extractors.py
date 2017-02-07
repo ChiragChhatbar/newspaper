@@ -233,7 +233,16 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'pblshinfo'},
             {'attribute': 'class', 'value': 'buzz-datetime converted_buzz_datetime'},
             {'attribute': 'class', 'value': 'dtreviewed'},
-            {'attribute': 'class', 'value': 'date-taken-label'}
+            {'attribute': 'class', 'value': 'date-taken-label'},
+            {'attribute': 'class', 'value': 'tagline'},
+            {'attribute': 'class', 'value': 'date-created'},
+            {'attribute': 'class', 'value': 'publish_info'},
+            {'attribute': 'class', 'value': 'publishdate'},
+            {'attribute': 'class', 'value': 'title'},
+            {'attribute': 'class', 'value': 'timestamp'},
+            {'attribute': 'class', 'value': 'basic-article__dateline'},
+            {'attribute': 'class', 'value': 'content'},
+            {'attribute': 'class', 'value': 'date-license'},
         ]
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
