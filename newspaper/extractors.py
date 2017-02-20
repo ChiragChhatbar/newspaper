@@ -243,6 +243,9 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'basic-article__dateline'},
             {'attribute': 'class', 'value': 'content'},
             {'attribute': 'class', 'value': 'date-license'},
+            {'attribute': 'class', 'value': 'auther_name'},
+            {'attribute': 'class', 'value': 'detailNewsDate'},
+            {'attribute': 'class', 'value': 'tie-date'},
         ]
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
