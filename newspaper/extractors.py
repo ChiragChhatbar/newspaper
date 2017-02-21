@@ -261,15 +261,17 @@ class ContentExtractor(object):
         """
         try:
             title = ''
+            title_text = None
             title_element = self.parser.getElementsByTag(doc, tag='meta', attr='property', value='og:title')
             # no title found
             if title_element is None or len(title_element) == 0:
                 title_element = self.parser.getElementsByTag(doc, tag='title')
-                title_text = self.parser.getText(title_element[0])
+                if not title_element:
+                    title_text = self.parser.getText(title_element[0])
 
             if title_element is None or len(title_element) == 0:
                 return title
-            else:
+            elif not title_text:
                 title_text = self.parser.getAttribute(title_element[0], 'content')
             # title elem found
             # split title with |
