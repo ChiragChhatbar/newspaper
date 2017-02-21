@@ -266,7 +266,7 @@ class ContentExtractor(object):
             # no title found
             if title_element is None or len(title_element) == 0:
                 title_element = self.parser.getElementsByTag(doc, tag='title')
-                if not title_element:
+                if title_element:
                     title_text = self.parser.getText(title_element[0])
 
             if title_element is None or len(title_element) == 0:
