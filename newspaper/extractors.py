@@ -247,9 +247,10 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'detailNewsDate'},
             {'attribute': 'class', 'value': 'tie-date'},
             {'attribute': 'class', 'value': 'news_date'},
+            {'attribute': 'class', 'value': 'date'},
+            {'attribute': 'class', 'value': 'timestamp__date--published'},
             {'attribute': 'class', 'value': '''color: #535353; font: 400 11px/18px 'Open Sans',sans-serif !important;
                                             margin:0px 0px 10px 0px; text-align:left;'''},
-            {'attribute': 'class', 'value': 'date'},
         ]
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
