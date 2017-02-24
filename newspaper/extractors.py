@@ -202,7 +202,9 @@ class ContentExtractor(object):
             {'attribute': 'id', 'value': 'publishDate', 'content': 'title'},
             {'attribute': 'http-equiv', 'value': 'Last-Modified', 'content': 'content'},
             {'attribute': 'name', 'value': 'parsely-pub-date', 'content': 'content'},
+            {'attribute': 'name', 'value': 'shareaholic:article_published_time', 'content': 'content'},
         ]
+
         for known_meta_tag in PUBLISH_DATE_TAGS:
             meta_tags = self.parser.getElementsByTag(
                 doc,
@@ -252,6 +254,7 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': '''color: #535353; font: 400 11px/18px 'Open Sans',sans-serif !important;
                                             margin:0px 0px 10px 0px; text-align:left;'''},
         ]
+
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
             if cur_tags and self.parser.getAttribute(cur_tags[0], known_tag['attribute']) == known_tag['value']:
