@@ -261,23 +261,35 @@ class ContentExtractor(object):
                     return datetime_obj
         return None
 
+    def get_title_text(self, doc):
+
+        TITLE_TAGS = [
+            {'tag': 'meta', 'attr': 'property', 'value': 'og:title', 'content': 'content'},
+            {'tag': 'meta', 'attr': 'property', 'value': 'twitter:title', 'content': 'content'},
+            {'tag': 'title', 'attr': None, 'value': None, 'content': None}
+        ]
+
+        title_element = None
+        for title_tag in TITLE_TAGS:
+            title_element = self.parser.getElementsByTag(doc, tag=title_tag['tag'], attr=title_tag['attr'],
+                                                         value=title_tag['value'])
+            if title_element:
+                break
+
+        if not title_element:
+            raise Exception('Title element not found')
+
+        if title_tag['content']:
+            title_text = self.parser.getAttribute(title_element[0], title_tag['content'])
+        else:
+            title_text = self.parser.getText(title_element[0])
+        return title_text
+
     def get_title(self, doc):
         """Fetch the article title and analyze it
         """
         try:
-            title = ''
-            title_text = None
-            title_element = self.parser.getElementsByTag(doc, tag='meta', attr='property', value='og:title')
-            # no title found
-            if title_element is None or len(title_element) == 0:
-                title_element = self.parser.getElementsByTag(doc, tag='title')
-                if title_element:
-                    title_text = self.parser.getText(title_element[0])
-
-            if title_element is None or len(title_element) == 0:
-                return title
-            elif not title_text:
-                title_text = self.parser.getAttribute(title_element[0], 'content')
+            title_text = self.get_title_text(doc=doc)
             # title elem found
             # split title with |
             used_delimeter = False
