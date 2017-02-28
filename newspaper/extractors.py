@@ -202,7 +202,9 @@ class ContentExtractor(object):
             {'attribute': 'id', 'value': 'publishDate', 'content': 'title'},
             {'attribute': 'http-equiv', 'value': 'Last-Modified', 'content': 'content'},
             {'attribute': 'name', 'value': 'parsely-pub-date', 'content': 'content'},
+            {'attribute': 'name', 'value': 'shareaholic:article_published_time', 'content': 'content'},
         ]
+
         for known_meta_tag in PUBLISH_DATE_TAGS:
             meta_tags = self.parser.getElementsByTag(
                 doc,
@@ -243,7 +245,17 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'basic-article__dateline'},
             {'attribute': 'class', 'value': 'content'},
             {'attribute': 'class', 'value': 'date-license'},
+            {'attribute': 'class', 'value': 'auther_name'},
+            {'attribute': 'class', 'value': 'detailNewsDate'},
+            {'attribute': 'class', 'value': 'tie-date'},
+            {'attribute': 'class', 'value': 'news_date'},
+            {'attribute': 'class', 'value': 'date'},
+            {'attribute': 'class', 'value': 'timestamp__date--published'},
+            {'attribute': 'id', 'value': 'PublishedDateAndTime'},
+            {'attribute': 'class', 'value': '''color: #535353; font: 400 11px/18px 'Open Sans',sans-serif !important;
+                                            margin:0px 0px 10px 0px; text-align:left;'''},
         ]
+
         for known_tag in BODY_DATE_TAGS:
             cur_tags = self.parser.getElementsByTag(doc, attr=known_tag['attribute'], value=known_tag['value'])
             if cur_tags and self.parser.getAttribute(cur_tags[0], known_tag['attribute']) == known_tag['value']:
@@ -253,21 +265,35 @@ class ContentExtractor(object):
                     return datetime_obj
         return None
 
+    def get_title_text(self, doc):
+
+        TITLE_TAGS = [
+            {'tag': 'meta', 'attr': 'property', 'value': 'og:title', 'content': 'content'},
+            {'tag': 'meta', 'attr': 'property', 'value': 'twitter:title', 'content': 'content'},
+            {'tag': 'title', 'attr': None, 'value': None, 'content': None}
+        ]
+
+        title_element = None
+        for title_tag in TITLE_TAGS:
+            title_element = self.parser.getElementsByTag(doc, tag=title_tag['tag'], attr=title_tag['attr'],
+                                                         value=title_tag['value'])
+            if title_element:
+                break
+
+        if not title_element:
+            raise Exception('Title element not found')
+
+        if title_tag['content']:
+            title_text = self.parser.getAttribute(title_element[0], title_tag['content'])
+        else:
+            title_text = self.parser.getText(title_element[0])
+        return title_text
+
     def get_title(self, doc):
         """Fetch the article title and analyze it
         """
         try:
-            title = ''
-            title_element = self.parser.getElementsByTag(doc, tag='meta', attr='property', value='og:title')
-            # no title found
-            if title_element is None or len(title_element) == 0:
-                title_element = self.parser.getElementsByTag(doc, tag='title')
-                title_text = self.parser.getText(title_element[0])
-
-            if title_element is None or len(title_element) == 0:
-                return title
-            else:
-                title_text = self.parser.getAttribute(title_element[0], 'content')
+            title_text = self.get_title_text(doc=doc)
             # title elem found
             # split title with |
             used_delimeter = False
