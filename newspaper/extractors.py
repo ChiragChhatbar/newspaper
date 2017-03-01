@@ -181,12 +181,13 @@ class ContentExtractor(object):
                 # specifier, e.g. /2014/04/
                 return None
 
+        datetime_obj = None
         date_match = re.search(urls.DATE_REGEX, url)
         if date_match:
             date_str = date_match.group(0)
             datetime_obj = parse_date_str(date_str)
-            if datetime_obj:
-                return datetime_obj
+            # if datetime_obj:
+            #     return datetime_obj
 
         PUBLISH_DATE_TAGS = [
             {'attribute': 'property', 'value': 'rnews:datePublished', 'content': 'content'},
@@ -263,7 +264,7 @@ class ContentExtractor(object):
                 datetime_obj = parse_date_str(date_str)
                 if datetime_obj:
                     return datetime_obj
-        return None
+        return datetime_obj
 
     def get_title_text(self, doc):
 
