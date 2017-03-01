@@ -30,12 +30,12 @@ MOTLEY_REPLACEMENT = StringReplacement("&#65533;", "")
 ESCAPED_FRAGMENT_REPLACEMENT = StringReplacement(
     u"#!", u"?_escaped_fragment_=")
 TITLE_REPLACEMENTS = ReplaceSequence().create(u"&raquo;").append(u"»")
-PIPE_SPLITTER = StringSplitter("\\|")
+PIPE_SPLITTER = StringSplitter(" \\| ")
 DASH_SPLITTER = StringSplitter(" - ")
-UNDERSCORE_SPLITTER = StringSplitter("_")
-SLASH_SPLITTER = StringSplitter("/")
+UNDERSCORE_SPLITTER = StringSplitter(" _ ")
+SLASH_SPLITTER = StringSplitter(" / ")
 ARROWS_SPLITTER = StringSplitter("»")
-COLON_SPLITTER = StringSplitter(":")
+COLON_SPLITTER = StringSplitter(" : ")
 SPACE_SPLITTER = StringSplitter(' ')
 NO_STRINGS = set()
 A_REL_TAG_SELECTOR = "a[rel=tag]"
@@ -297,21 +297,21 @@ class ContentExtractor(object):
             # title elem found
             # split title with |
             used_delimeter = False
-            if '|' in title_text:
+            if ' | ' in title_text:
                 title_text = self.split_title(title_text, PIPE_SPLITTER)
                 used_delimeter = True
 
             # split title with -
-            if not used_delimeter and '-' in title_text:
+            if not used_delimeter and ' - ' in title_text:
                 title_text = self.split_title(title_text, DASH_SPLITTER)
                 used_delimeter = True
 
             # split title with _
-            if not used_delimeter and '_' in title_text:
+            if not used_delimeter and ' _ ' in title_text:
                 title_text = self.split_title(title_text, UNDERSCORE_SPLITTER)
 
             # split title with /
-            if not used_delimeter and '/' in title_text:
+            if not used_delimeter and ' / ' in title_text:
                 title_text = self.split_title(title_text, SLASH_SPLITTER)
                 used_delimeter = True
 
@@ -321,7 +321,7 @@ class ContentExtractor(object):
                 used_delimeter = True
 
             # split title with :
-            if not used_delimeter and ':' in title_text:
+            if not used_delimeter and ' : ' in title_text:
                 title_text = self.split_title(title_text, COLON_SPLITTER)
                 used_delimeter = True
 
