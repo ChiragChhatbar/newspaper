@@ -253,6 +253,7 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'date'},
             {'attribute': 'class', 'value': 'timestamp__date--published'},
             {'attribute': 'id', 'value': 'PublishedDateAndTime'},
+            {'attribute': 'class', 'value': 'news-author-date'},
             {'attribute': 'class', 'value': '''color: #535353; font: 400 11px/18px 'Open Sans',sans-serif !important;
                                             margin:0px 0px 10px 0px; text-align:left;'''},
         ]
