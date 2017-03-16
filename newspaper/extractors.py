@@ -180,7 +180,8 @@ class ContentExtractor(object):
                 # near all parse failures are due to URL dates without a day
                 # specifier, e.g. /2014/04/
                 return None
-
+              
+        datetime_obj = None
         # No need for URL based date for our problem space
         # date_match = re.search(urls.DATE_REGEX, url)
         # if date_match:
@@ -265,7 +266,7 @@ class ContentExtractor(object):
                 datetime_obj = parse_date_str(date_str)
                 if datetime_obj:
                     return datetime_obj
-        return None
+        return datetime_obj
 
     def get_title_text(self, doc):
 
