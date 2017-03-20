@@ -30,12 +30,12 @@ MOTLEY_REPLACEMENT = StringReplacement("&#65533;", "")
 ESCAPED_FRAGMENT_REPLACEMENT = StringReplacement(
     u"#!", u"?_escaped_fragment_=")
 TITLE_REPLACEMENTS = ReplaceSequence().create(u"&raquo;").append(u"»")
-PIPE_SPLITTER = StringSplitter("\\|")
+PIPE_SPLITTER = StringSplitter(" \\| ")
 DASH_SPLITTER = StringSplitter(" - ")
-UNDERSCORE_SPLITTER = StringSplitter("_")
-SLASH_SPLITTER = StringSplitter("/")
+UNDERSCORE_SPLITTER = StringSplitter(" _ ")
+SLASH_SPLITTER = StringSplitter(" / ")
 ARROWS_SPLITTER = StringSplitter("»")
-COLON_SPLITTER = StringSplitter(":")
+COLON_SPLITTER = StringSplitter(" : ")
 SPACE_SPLITTER = StringSplitter(' ')
 NO_STRINGS = set()
 A_REL_TAG_SELECTOR = "a[rel=tag]"
@@ -180,14 +180,15 @@ class ContentExtractor(object):
                 # near all parse failures are due to URL dates without a day
                 # specifier, e.g. /2014/04/
                 return None
-
+              
         datetime_obj = None
-        date_match = re.search(urls.DATE_REGEX, url)
-        if date_match:
-            date_str = date_match.group(0)
-            datetime_obj = parse_date_str(date_str)
-            # if datetime_obj:
-            #     return datetime_obj
+        # No need for URL based date for our problem space
+        # date_match = re.search(urls.DATE_REGEX, url)
+        # if date_match:
+        #     date_str = date_match.group(0)
+        #     datetime_obj = parse_date_str(date_str)
+        #     if datetime_obj:
+        #         return datetime_obj
 
         PUBLISH_DATE_TAGS = [
             {'attribute': 'property', 'value': 'rnews:datePublished', 'content': 'content'},
@@ -253,6 +254,7 @@ class ContentExtractor(object):
             {'attribute': 'class', 'value': 'date'},
             {'attribute': 'class', 'value': 'timestamp__date--published'},
             {'attribute': 'id', 'value': 'PublishedDateAndTime'},
+            {'attribute': 'class', 'value': 'news-author-date'},
             {'attribute': 'class', 'value': '''color: #535353; font: 400 11px/18px 'Open Sans',sans-serif !important;
                                             margin:0px 0px 10px 0px; text-align:left;'''},
         ]
@@ -298,21 +300,21 @@ class ContentExtractor(object):
             # title elem found
             # split title with |
             used_delimeter = False
-            if '|' in title_text:
+            if ' | ' in title_text:
                 title_text = self.split_title(title_text, PIPE_SPLITTER)
                 used_delimeter = True
 
             # split title with -
-            if not used_delimeter and '-' in title_text:
+            if not used_delimeter and ' - ' in title_text:
                 title_text = self.split_title(title_text, DASH_SPLITTER)
                 used_delimeter = True
 
             # split title with _
-            if not used_delimeter and '_' in title_text:
+            if not used_delimeter and ' _ ' in title_text:
                 title_text = self.split_title(title_text, UNDERSCORE_SPLITTER)
 
             # split title with /
-            if not used_delimeter and '/' in title_text:
+            if not used_delimeter and ' / ' in title_text:
                 title_text = self.split_title(title_text, SLASH_SPLITTER)
                 used_delimeter = True
 
@@ -322,7 +324,7 @@ class ContentExtractor(object):
                 used_delimeter = True
 
             # split title with :
-            if not used_delimeter and ':' in title_text:
+            if not used_delimeter and ' : ' in title_text:
                 title_text = self.split_title(title_text, COLON_SPLITTER)
                 used_delimeter = True
 
